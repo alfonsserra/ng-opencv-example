@@ -1,0 +1,47 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<div class="d-flex flex-column w-100">
+    <div class="d-flex flex-column w-100">
+        <nav class="navbar navbar-dark bg-primary">
+            <span class="navbar-brand mb-0 h1">Open CV</span>
+        </nav>
+    </div>
+    <div class="container-fluid mt-2 ">
+        <div class="jumbotron">
+            <h1>OpenCV - Circle Detection</h1>
+            <p>This website uses OpenCVJS to detect circles in any uploaded image.</p>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <div class="card">
+                    <div class="card-header">
+                        Original Image
+                    </div>
+                    <div class="card-block text-center">
+                        <img id="imageOriginal" alt="Upload" class="card-img-top"/>
+                    </div>
+                    <div class="card-footer text-muted">
+                        <input type="file" id="imageInput" name="file" (change)="readFile($event)"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm">
+                <div class="card">
+                    <div class="card-header">
+                        Modified Image
+                    </div>
+                    <div class="card-block">
+                        <canvas id="imageCanvas"></canvas>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <button type="button" id="circlesButton" class="btn btn-primary" (click)="calculate()">Circle Detection</button>
+                        </li>
+                    </ul>
+                    <div class="card-footer">
+                        <a href="#" id="button" class="card-link">Download Image</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
