@@ -24,7 +24,12 @@
             "tsConfig": "src/tsconfig.app.json",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              {
+                "glob": "picture.png",
+                "input": "src/assets/",
+                "output": "/images"
+              }
             ],
             "styles": [
               "src/styles.scss",
@@ -124,8 +129,12 @@
             ],
             "assets": [
               "src/favicon.ico",
-              "src/assets"
-            ]
+              "src/assets",
+              {
+                "glob": "picture.png",
+                "input": "src/assets/",
+                "output": "/images"
+              }            ]
           }
         },
         "lint": {
