@@ -90,4 +90,84 @@ export class AppComponent {
 		this.disabled = false;
 	}
 
+	public doGaussianBlur() {
+		this.disabled = true;
+
+		const src = cv.imread('imageCanvas');
+		const dst = new cv.Mat();
+		const ksize = new cv.Size(11, 11);
+
+		cv.GaussianBlur(src, dst, ksize, 0, 0, cv.BORDER_DEFAULT);
+		cv.imshow('imageCanvas', dst);
+		src.delete();
+		dst.delete();
+		this.disabled = false;
+	}
+
+	public doPreview() {
+		this.disabled = true;
+		const max_prct = 0.15;
+
+		const src = cv.imread('imageCanvas');
+		let dst = this.new_green_layer(src);
+		cv.imshow('imageCanvas', dst);
+
+		src.delete();
+		dst.delete();
+		this.disabled = false;
+	}
+
+	public new_green_layer(src, clean_prct = 0.05) {
+		const rgbaPlanes = new cv.MatVector();
+		// Split the Mat
+		cv.split(src, rgbaPlanes);
+		// Get Blue channel
+		const green = rgbaPlanes.get(1);
+
+		const dst = this.thresh_image(green, clean_prct);
+
+		for (let i = 0; i < green.length; i++) {
+			for (let j = 0; j < green[i].length; j++) {
+
+				green[i] = green[i][j] & dst[i][j];
+			}
+		}
+		return green;
+	}
+
+	public new_blue_layer(src) {
+		const rgbaPlanes = new cv.MatVector();
+		// Split the Mat
+		cv.split(src, rgbaPlanes);
+		// Get Blue channel
+		const blue = rgbaPlanes.get(2);
+
+		const dst = this.thresh_image(blue);
+
+		for (let i = 0; i < blue.length; i++) {
+			for (let j = 0; j < blue[i].length; j++) {
+
+				blue[i] = blue[i][j] & dst[i][j];
+			}
+		}
+		return blue;
+	}
+
+	public thresh_image(src, max_prct = 0.15, ero_dia_iter = 1, erode_iter = 2, dilate_iter = 2) {
+
+		const dst = new cv.Mat();
+
+		cv.threshold(src, dst, max_prct * 255, 255, cv.THRESH_BINARY);
+
+		const ksize = new cv.Size(11, 11);
+		cv.GaussianBlur(dst, dst, ksize, 0, 0, cv.BORDER_DEFAULT);
+
+		let M = cv.Mat.ones(3, 3, cv.CV_8U);
+
+		for (let i = 0; i < ero_dia_iter; i++) {
+			cv.erode(dst, dst, M, new cv.Point(-1, -1), erode_iter);
+			cv.dilate(dst, dst, M, new cv.Point(-1, -1), dilate_iter);
+		}
+		return dst;
+	}
 }
