@@ -109,7 +109,7 @@ export class AppComponent {
 		const max_prct = 0.15;
 
 		const src = cv.imread('imageCanvas');
-		let dst = this.new_green_layer(src);
+		let dst = this.tune_contrast(src);
 		cv.imshow('imageCanvas', dst);
 
 		src.delete();
@@ -121,7 +121,7 @@ export class AppComponent {
 		const rgbaPlanes = new cv.MatVector();
 		// Split the Mat
 		cv.split(src, rgbaPlanes);
-		// Get Blue channel
+		// Get Green channel
 		const green = rgbaPlanes.get(1);
 
 		const dst = this.thresh_image(green, clean_prct);
@@ -170,4 +170,39 @@ export class AppComponent {
 		}
 		return dst;
 	}
+
+	public tune_contrast(src) {
+		const dst = new cv.Mat();
+		const rgbaPlanes = new cv.MatVector();
+		// Split the Mat
+		cv.split(src, rgbaPlanes);
+		// Get Blue channel
+		const blue = rgbaPlanes.get(2);
+		// Get Green channel
+		const green = rgbaPlanes.get(1);
+
+		const clahe = new cv.CLAHE(2.0, new cv.Size(8, 8));
+
+		const claheBlue = new cv.Mat();
+		clahe.apply(blue, claheBlue);
+
+		const claheGreen = new cv.Mat();
+		clahe.apply(green, claheGreen);
+
+		rgbaPlanes.set(1, claheGreen);
+		rgbaPlanes.set(2, claheBlue);
+
+		cv.merge(rgbaPlanes, dst);
+
+		return dst;
+	}
+
+	/*
+	def tune_contrast(image):
+		clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+	blue = clahe.apply(image[:, :, 0])
+	green = clahe.apply(image[:, :, 1])
+	newImage = cv2.merge([blue, green, np.zeros_like(green)])
+	return
+	*/
 }
